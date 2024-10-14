@@ -6,7 +6,6 @@ import {
 import { log } from './middlewares/logger';
 import databaseConfig from '../cosmosDB.json';
 
-
 export function getClient(): CosmosClient {
 	return new CosmosClient({
 		endpoint: databaseConfig.endpoint,
@@ -49,6 +48,19 @@ export async function createFamilyItem(
 		.container(containerId)
 		.items.upsert(fItem);
 	return item;
+}
+
+export async function deleteFamilyItem(
+	client: CosmosClient,
+	containerId: string,
+	itemId: string,
+	itemBody: Object
+) {
+	await client
+		.database(databaseConfig.databaseId)
+		.container(containerId)
+		.item(itemId)
+		.delete(itemBody);
 }
 
 export async function query(

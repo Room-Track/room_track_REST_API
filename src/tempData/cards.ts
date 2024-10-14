@@ -5,36 +5,43 @@ export const tempCards: Array<Card> = [
 		name: 'M',
 		icon: 'building.svg',
 		type: 'Building',
+		gloc: 'Inside'
 	},
 	{
 		name: 'M203',
 		icon: 'room.svg',
 		type: 'ClassRoom',
+		gloc: 'Inside'
 	},
 	{
 		name: 'M204',
 		icon: 'room.svg',
 		type: 'ClassRoom',
+		gloc: 'Inside'
 	},
 	{
 		name: 'M205',
 		icon: 'room.svg',
 		type: 'ClassRoom',
+		gloc: 'Inside'
 	},
 	{
 		name: 'M206',
 		icon: 'room.svg',
 		type: 'ClassRoom',
+		gloc: 'Inside'
 	},
 	{
 		name: 'M207',
 		icon: 'room.svg',
 		type: 'ClassRoom',
+		gloc: 'Inside'
 	},
 	{
 		name: 'M208',
 		icon: 'room.svg',
 		type: 'ClassRoom',
+		gloc: 'Inside'
 	},
 ];
 
