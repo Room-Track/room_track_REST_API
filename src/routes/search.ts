@@ -3,16 +3,11 @@ import { Router } from 'express';
 import authenticate from '../middlewares/authenticate';
 import { query } from '../database';
 import type { CosmosClient } from '@azure/cosmos';
-import { format_to_favorites } from '../lib/format';
 
 const router = Router();
 router.use(authenticate);
 
 router.get('/favorites', async (req: Request, res) => {
-	if (!req.query['name']) {
-		res.status(200).json({ array: [] });
-		return;
-	}
 	const client: CosmosClient = req.app.get('client');
 	//@ts-ignore
 	const user: string = req.token?.email;
@@ -36,7 +31,12 @@ router.get('/favorites', async (req: Request, res) => {
 		],
 	});
 
-	const result = result_basic.map((card) => format_to_favorites(card));
+	const result = result_basic.map((card) => {
+		return {
+			isFavorite: true,
+			...card,
+		};
+	});
 
 	res.status(200).json({
 		data: result,
@@ -45,12 +45,13 @@ router.get('/favorites', async (req: Request, res) => {
 
 router.get('/', async (req: Request, res) => {
 	if (!req.query['name']) {
-		res.status(200).json({ array: [] });
+		res.status(200).json({ data: [] });
 		return;
 	}
 	const client: CosmosClient = req.app.get('client');
-
-	const result = await query(client, 'BasicInfo', {
+	//@ts-ignore
+	const user: string = req.token?.email;
+	const result_info = await query(client, 'BasicInfo', {
 		query: 'SELECT * FROM r WHERE CONTAINS(r.name, @name)',
 		parameters: [
 			{
@@ -60,8 +61,54 @@ router.get('/', async (req: Request, res) => {
 		],
 	});
 
+	const names = result_info.map((card) => card.name);
+
+	const result_favorites = await query(client, 'Favorites', {
+		query:
+			'SELECT * FROM r WHERE ARRAY_CONTAINS(@names, r.name) AND r.user = @user',
+		parameters: [
+			{
+				name: '@names',
+				value: names,
+			},
+			{
+				name: '@user',
+				value: user,
+			},
+		],
+	});
+
+	const result = result_info.map((card) => {
+		return {
+			isFavorite: result_favorites.some((fav) => fav.name == card.name),
+			...card,
+		};
+	});
+
 	res.status(200).json({
 		data: result,
+	});
+});
+
+router.get('/building', async (req: Request, res) => {
+	if (!req.query['name']) {
+		res.status(200).json({ array: [] });
+		return;
+	}
+	const client: CosmosClient = req.app.get('client');
+
+	const result = await query(client, 'Buildings', {
+		query: 'SELECT * FROM r WHERE r.name = @name',
+		parameters: [
+			{
+				name: '@name',
+				value: req.query['name'].toString(),
+			},
+		],
+	});
+
+	res.status(200).json({
+		data: result.at(0),
 	});
 });
 

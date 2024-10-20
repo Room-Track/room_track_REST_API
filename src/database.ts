@@ -7,6 +7,8 @@ import { log } from './middlewares/logger';
 import databaseConfig from '../cosmosDB.json';
 import { temp_basic_info_data } from './tempData/basic_info';
 import { temp_favorites_data } from './tempData/favorites';
+import type { ContainerType } from './types/containers';
+import { temp_buildings_data } from './tempData/building';
 
 export function getClient(): CosmosClient {
 	return new CosmosClient({
@@ -67,7 +69,7 @@ export async function deleteFamilyItem(
 
 export async function query(
 	client: CosmosClient,
-	containerId: string,
+	containerId: ContainerType,
 	querySpec: SqlQuerySpec
 ) {
 	const { resources } = await client
@@ -96,7 +98,6 @@ export async function fillDatabase(client: CosmosClient) {
 		console.write('|'.blue);
 	}
 	console.write('\n');
-	log(['Ready'], 1);
 	log(['Favorites'], 1);
 	log('.'.repeat(temp_favorites_data.length), 1);
 	console.write('   ');
@@ -105,5 +106,12 @@ export async function fillDatabase(client: CosmosClient) {
 		console.write('|'.blue);
 	}
 	console.write('\n');
-	log(['Ready'], 1);
+	log(['Buildings'], 1);
+	log('.'.repeat(temp_buildings_data.length), 1);
+	console.write('   ');
+	for (const info of temp_buildings_data) {
+		await createFamilyItem(client, 'Buildings', info);
+		console.write('|'.blue);
+	}
+	console.write('\n');
 }

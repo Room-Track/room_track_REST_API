@@ -17,10 +17,10 @@ enable();
 
 const client = getClient();
 
-await dropDatabase(client);
-await createDatabase(client);
-await createContainers(client);
-await fillDatabase(client);
+//await dropDatabase(client);
+//await createDatabase(client);
+//await createContainers(client);
+//await fillDatabase(client);
 
 const serviceAccountKey = require('../serviceAccountKey.json');
 const app = express();
