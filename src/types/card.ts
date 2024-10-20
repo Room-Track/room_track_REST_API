@@ -1,11 +1,16 @@
-export interface Card {
+
+export interface FavoriteCard_sql {
 	name: string;
-	icon: string;
-	type: string;
-	gloc: string;
+	user: string;
 }
 
-export interface Tag {
-	user: string;
+export interface BasicInfoCard_sql {
 	name: string;
+	type: string;
+}
+
+export interface FavoriteCard_res {
+	name: string;
+	type: string;
+	isFavorite: boolean;
 }

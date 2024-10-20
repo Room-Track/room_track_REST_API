@@ -5,6 +5,8 @@ import {
 } from '@azure/cosmos';
 import { log } from './middlewares/logger';
 import databaseConfig from '../cosmosDB.json';
+import { temp_basic_info_data } from './tempData/basic_info';
+import { temp_favorites_data } from './tempData/favorites';
 
 export function getClient(): CosmosClient {
 	return new CosmosClient({
@@ -74,4 +76,34 @@ export async function query(
 		.items.query(querySpec)
 		.fetchAll();
 	return resources;
+}
+
+export async function dropDatabase(client: CosmosClient) {
+	log(['Database'.green], 0);
+	const { database } = await client
+		.database(databaseConfig.databaseId)
+		.delete();
+	log([`Delted Id:${database.id}`], 1);
+}
+
+export async function fillDatabase(client: CosmosClient) {
+	log(['Filling'.green], 0);
+	log(['BasicInfo'], 1);
+	log('.'.repeat(temp_basic_info_data.length), 1);
+	console.write('   ');
+	for (const info of temp_basic_info_data) {
+		await createFamilyItem(client, 'BasicInfo', info);
+		console.write('|'.blue);
+	}
+	console.write('\n');
+	log(['Ready'], 1);
+	log(['Favorites'], 1);
+	log('.'.repeat(temp_favorites_data.length), 1);
+	console.write('   ');
+	for (const info of temp_favorites_data) {
+		await createFamilyItem(client, 'Favorites', info);
+		console.write('|'.blue);
+	}
+	console.write('\n');
+	log(['Ready'], 1);
 }

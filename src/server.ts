@@ -4,15 +4,23 @@ import { enable } from 'colors';
 import admin from 'firebase-admin';
 import AuthRouter from './routes/auth';
 import SearchRouter from './routes/search';
-import UpdateRouter from './routes/update';
+import CardManagerRouter from './routes/manage_cards';
 import Madlogger, { log } from './middlewares/logger';
-import { createContainers, createDatabase, getClient } from './database';
+import {
+	createContainers,
+	createDatabase,
+	dropDatabase,
+	fillDatabase,
+	getClient,
+} from './database';
 enable();
 
 const client = getClient();
 
+await dropDatabase(client);
 await createDatabase(client);
 await createContainers(client);
+await fillDatabase(client);
 
 const serviceAccountKey = require('../serviceAccountKey.json');
 const app = express();
@@ -29,7 +37,7 @@ app.use(Madlogger('dev'));
 app.use(cors());
 app.use('/auth', AuthRouter);
 app.use('/search', SearchRouter);
-app.use('/update', UpdateRouter);
+app.use('/cards', CardManagerRouter);
 log(['Server'.green], 0);
 app.listen(app.get('port'), () => {
 	log([`Port:${app.get('port')}`], 1);
