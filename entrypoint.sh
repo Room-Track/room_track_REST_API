@@ -6,4 +6,4 @@ nginx -s reload
 # Run NGINX
 nginx
 
-bun dev
+bun serve

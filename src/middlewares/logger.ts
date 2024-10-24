@@ -16,6 +16,12 @@ const devlogger: RequestHandler = (req, res, next) => {
     
 	const startTime = Date.now();
 	onFinished(res, (err, response) => {
+		if (err){
+			log([`ERROR: ${err.name}`.red], 0);
+			log(['message: ', err.message], 1);
+			log(['cause: ', `${err.cause}`], 1);
+			return;
+		}
 		const time = Date.now() - startTime;
 		const status = response.statusCode;
 		//@ts-ignore

@@ -8,14 +8,17 @@ router.post('/signup', async (req, res) => {
 		res.status(400).json({ msg: 'Fields must be complete' });
 		return;
 	}
-
-	const response = await admin.auth().createUser({
-		email: req.body.email,
-		password: req.body.password,
-		emailVerified: false,
-		disabled: false,
-	});
-	res.status(200).json(response);
+	try {
+		const response = await admin.auth().createUser({
+			email: req.body.email,
+			password: req.body.password,
+			emailVerified: false,
+			disabled: false,
+		});
+		res.status(200).json(response);
+	} catch {
+		res.status(500);
+	}
 });
 
 export default router;

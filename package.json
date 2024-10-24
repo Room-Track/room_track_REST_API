@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun --hot run src/server.ts",
-		"serve": "bun run src/server.ts"
+		"serve": "bun run src/server.ts &> /app/log/server.log"
 	},
 	"devDependencies": {
 		"@types/bun": "latest"

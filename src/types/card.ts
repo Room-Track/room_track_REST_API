@@ -15,6 +15,8 @@ export interface BuildingInfoCard_sql {
 	lat: string;
 	lng: string;
 	inside: boolean;
+	bot_floor: number;
+	top_floor: number;
 }
 
 export interface FavoriteCard_res {
